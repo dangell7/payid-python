@@ -53,8 +53,7 @@ def post_headers():
 
 def get(url):
     try:
-        print('Get Url: {}'.format(url))
-        print(create_access_tuple())
+        # print('Get Url: {}'.format(url))
         res = requests.get(url, auth=create_access_tuple())
     except Exception as e:
         handle_request_error(e)
@@ -63,7 +62,7 @@ def get(url):
 
 def post(url, json):
     try:
-        print('Post Url: {}'.format(url))
+        # print('Post Url: {}'.format(url))
         res = requests.post(url, headers=post_headers(), json=json)
     except Exception as e:
         handle_request_error(e)

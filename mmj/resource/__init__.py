@@ -29,21 +29,13 @@ class MMJResource(PrintableResource):
         return client.build_url('dispensaries/')
 
     @classmethod
-    def retrieve_url(cls):
-        return cls.list_url()
+    def retrieve_url(cls, instance_id):
+        return cls.list_url() + instance_id + '/'
 
     @classmethod
-    def get(cls):
-        print('1')
-        env = client.get_env()
-        if env == 'Json':
-            print('2')
-            # path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facility'
-            # res = read_json(path)
-            res = {}
-        else:
-            print('3')
-            res = client.get(cls.retrieve_url())
+    def get(cls, instance_id):
+        path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facility'
+        res = read_json(path)
         return cls(**res)
 
     def __init__(self, **kwargs):
@@ -67,14 +59,17 @@ class MMJFacilityResource(MMJResource):
 
     @classmethod
     def list_url(cls, facility_id):
-        return client.build_url('dispensaries/') + facility_id + '/'
+        # print('Facility Resource "ListID1": {}'.format(facility_id))
+        return client.build_url('')
 
     @classmethod
     def retrieve_url(cls, facility_id, instance_id):
+        # print('Facility Resource "RetID1": {} "RetID2": {}'.format(facility_id, instance_id))
         return cls.list_url(facility_id) + instance_id + '/'
 
     @classmethod
     def get(cls, facility_id, instance_id):
+        # print('Facility Resource "GetID1": {} "GetID2": {}'.format(facility_id, instance_id))
         res = client.get(cls.retrieve_url(facility_id, instance_id))
         return cls(**res)
 

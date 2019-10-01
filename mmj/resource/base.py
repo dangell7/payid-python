@@ -14,6 +14,7 @@ class Facility(MMJResource):
     @classmethod
     def all(cls):
         env = client.get_env()
+        print(env)
         if env == 'Json':
             path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facilities'
             res = read_json(path)
@@ -43,9 +44,9 @@ class Facility(MMJResource):
 
     # @cached_property
     def get_item(self, id):
-        print(id)
+        env = client.get_env()
         if env == 'Json':
-            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'item'
+            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'menu_item'
             res = read_json(path)
         else:
             res = client.get(Item.get_url(self.LicenseNumber, id))
@@ -53,14 +54,15 @@ class Facility(MMJResource):
 
     @cached_property
     def items(self):
+        env = client.get_env()
         if env == 'Json':
-            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'items'
+            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'menu_items'
             res = read_json(path)
         else:
             res = client.get(Item.list_url(self.LicenseNumber))
 
-        # print(json.dumps(res, indent=4, sort_keys=True))
-        return [Item(self.LicenseNumber, **t) for t in res]
+        res = res['menu_items']
+        return [Item(self.LicenseNumber, **i) for i in res]
 
     def __unicode__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.LicenseNumber)
