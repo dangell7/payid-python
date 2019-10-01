@@ -54,10 +54,8 @@ def post_headers():
 def get(url):
     try:
         print('Get Url: {}'.format(url))
-        session = requests.Session()
-        session.auth = create_access_tuple()
-        print(session.auth)
-        res = session.get(url, auth=create_access_tuple())
+        print(create_access_tuple())
+        res = requests.get(url, auth=create_access_tuple())
     except Exception as e:
         handle_request_error(e)
 
