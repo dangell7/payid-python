@@ -1,0 +1,5 @@
+.eggs
+mmj.egg-info
+*.pyc
+venv
+.cache
