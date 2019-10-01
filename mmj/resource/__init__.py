@@ -26,8 +26,7 @@ class MMJResource(PrintableResource):
 
     @classmethod
     def list_url(cls):
-        # return client.build_url('dispensaries/')
-        return client.build_url('menu_items/')
+        return client.build_url('dispensaries/')
 
     @classmethod
     def retrieve_url(cls):
@@ -68,8 +67,7 @@ class MMJFacilityResource(MMJResource):
 
     @classmethod
     def list_url(cls, facility_id):
-        # return client.build_url('dispensaries/') + facility_id + '/'
-        return client.build_url('menu_items/') + facility_id + '/'
+        return client.build_url('dispensaries/') + facility_id + '/'
 
     @classmethod
     def retrieve_url(cls, facility_id, instance_id):
