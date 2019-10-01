@@ -1,4 +1,4 @@
-from mmj import client, env
+from mmj import client
 from mmj.resource import MMJResource, MMJFacilityResource
 from mmj.util import (
     cached_property,
@@ -13,6 +13,7 @@ class Facility(MMJResource):
 
     @classmethod
     def all(cls):
+        env = client.get_env()
         if env == 'Json':
             path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facilities'
             res = read_json(path)
@@ -61,28 +62,7 @@ class Facility(MMJResource):
         # print(json.dumps(res, indent=4, sort_keys=True))
         return [Item(self.LicenseNumber, **t) for t in res]
 
-    # @cached_property
-    def get_package(self, id):
-        if env == 'Json':
-            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'package'
-            res = read_json(path)
-        else:
-            res = client.get(Package.get_url(self.LicenseNumber, id))
-        return Package(self, **res)
-
-    @cached_property
-    def packages(self):
-        if env == 'Json':
-            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'packages'
-            res = read_json(path)
-        else:
-            res = client.get(Package.list_url(self.LicenseNumber))
-
-        # print(json.dumps(res, indent=4, sort_keys=True))
-        return [Package(self.LicenseNumber, **t) for t in res]
-
     def __unicode__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.LicenseNumber)
 
-from mmj.resource.package import Package  # noqa - avoid circular import
-from mmj.resource.item import Item
+from mmj.resource.item import Item  # noqa - avoid circular import

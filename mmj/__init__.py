@@ -1,17 +1,12 @@
-api_base = 'https://sandbox-api-ca.mmj.com'
+api_base = 'https://mmjmenu.com/api/'
 api_key = None
-api_version = '1.0'
+api_version = 'v1'
 env = 'Json'
-# env = 'Prod'
 
 from mmj.resource.base import (  # noqa
     Facility,
 )
 
-from mmj.resource.package import (  # noqa
-    Package,
+from mmj.resource.item import (  # noqa
+    Item,
 )
-
-# from mmj.resource.item import (  # noqa
-#     Item,
-# )

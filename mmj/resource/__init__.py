@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from mmj import client, env
+from mmj import client
 from mmj.util import read_json
 from basedir import basedir
 
@@ -26,23 +26,25 @@ class MMJResource(PrintableResource):
 
     @classmethod
     def list_url(cls):
-        return client.build_url('facilities/v1')
+        # return client.build_url('dispensaries/')
+        return client.build_url('menu_items/')
 
     @classmethod
-    def retrieve_url(cls, instance_id):
-        return cls.list_url() + instance_id + '/'
+    def retrieve_url(cls):
+        return cls.list_url()
 
     @classmethod
-    def get(cls, instance_id):
+    def get(cls):
+        print('1')
+        env = client.get_env()
         if env == 'Json':
-            path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facility'
-            res = read_json(path)
-        elif env == 'Firestore':
-            mmj_ref = client.get_mmj_ref()
-            res = mmj_ref.get()
-            res = res.to_dict()
+            print('2')
+            # path = basedir + '/server/utils/mmj/tmp/%s.json' % 'facility'
+            # res = read_json(path)
+            res = {}
         else:
-            res = client.get(cls.retrieve_url(instance_id))
+            print('3')
+            res = client.get(cls.retrieve_url())
         return cls(**res)
 
     def __init__(self, **kwargs):
@@ -66,7 +68,8 @@ class MMJFacilityResource(MMJResource):
 
     @classmethod
     def list_url(cls, facility_id):
-        return client.build_url('facilities/v1') + facility_id + '/'
+        # return client.build_url('dispensaries/') + facility_id + '/'
+        return client.build_url('menu_items/') + facility_id + '/'
 
     @classmethod
     def retrieve_url(cls, facility_id, instance_id):

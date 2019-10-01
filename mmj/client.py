@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import requests
 import textwrap
+import json
 
 from mmj import api_base, api_version, error
 
@@ -14,9 +15,17 @@ def build_url(endpoint):
     return url
 
 def get_env():
+    from mmj import env
+
+    if not env:
+        raise error.AuthenticationError(
+            'No ENV provided. (HINT: set your ENV using '
+            '"mmj.env = <DBRef>"). '
+        )
+
     return env
 
-def get_headers():
+def create_access_tuple():
     from mmj import api_key
 
     if api_key is None:
@@ -25,16 +34,30 @@ def get_headers():
             '"mmj.api_key = <API-KEY>"). You can generate API keys '
             'from the MMJ web interface.'
         )
+    auth_tuple = ('{}'.format(api_key), 'x')
+    return auth_tuple
+
+def get_headers():
 
     return {
-        'Api-Key': api_key,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+def post_headers():
+
+    return {
+        'Content-Type': 'text/plain',
+        'Accept': 'application/json'
     }
 
 def get(url):
     try:
         print('Get Url: {}'.format(url))
-        res = requests.get(url, headers=get_headers())
+        session = requests.Session()
+        session.auth = create_access_tuple()
+        print(session.auth)
+        res = session.get(url, auth=create_access_tuple())
     except Exception as e:
         handle_request_error(e)
 
@@ -43,7 +66,7 @@ def get(url):
 def post(url, json):
     try:
         print('Post Url: {}'.format(url))
-        res = requests.post(url, headers=get_headers(), json=json)
+        res = requests.post(url, headers=post_headers(), json=json)
     except Exception as e:
         handle_request_error(e)
 
@@ -60,6 +83,7 @@ def delete(url):
 
 def handle_response(res):
     try:
+        res.raise_for_status()
         json = res.json()
     except ValueError as e:
         handle_parse_error(e)
@@ -68,7 +92,6 @@ def handle_response(res):
         handle_error_code(json, res.status_code, res.headers)
 
     return json
-
 
 def handle_request_error(e):
     if isinstance(e, requests.exceptions.RequestException):
@@ -105,6 +128,6 @@ def handle_error_code(json, status_code, headers):
         raise error.APIError(err, status_code, headers)
 
 def handle_parse_error(e, status_code=None, headers=None):
-    err = '{}: {}'.format(type(e).__name__, unicode(e))
+    err = '{}: {}'.format(type(e).__name__, e)
     msg = 'Error parsing MMJ JSON response. \n\n{}'.format(err)
     raise error.APIError(msg, status_code, headers)

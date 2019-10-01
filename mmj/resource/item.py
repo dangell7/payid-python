@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from mmj import client, error, env
+from mmj import client, error
 from mmj.resource import MMJFacilityResource
 from mmj.resource.base import (
     Facility
