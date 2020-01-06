@@ -4,7 +4,7 @@ import requests
 import textwrap
 import json
 
-from mmj import api_base, api_version, error
+from airbnb import api_base, api_version, error
 
 def build_url(endpoint):
     url = api_base + api_version + '/'
@@ -15,33 +15,60 @@ def build_url(endpoint):
     return url
 
 def get_env():
-    from mmj import env
+    from airbnb import env
 
     if not env:
         raise error.AuthenticationError(
             'No ENV provided. (HINT: set your ENV using '
-            '"mmj.env = <DBRef>"). '
+            '"airbnb.env = <DBRef>"). '
         )
 
     return env
 
-def create_access_tuple():
-    from mmj import api_key
+def get_token():
+    from airbnb import api_username, api_password
 
-    if api_key is None:
-        raise error.AuthenticationError(
-            'No API key provided. (HINT: set your API key using '
-            '"mmj.api_key = <API-KEY>"). You can generate API keys '
-            'from the MMJ web interface.'
-        )
-    auth_tuple = ('{}'.format(api_key), 'x')
-    return auth_tuple
+    if not api_username or not api_password:
+        raise ValueError('Invalid UserName or Password')
 
-def get_headers():
+    BASE_URL = 'https://api.airbnb.com/v2/logins'
+    payload = {
+        'email': api_username,
+        'password': api_password,
+    }
 
+    # Client ID does NOT change
+    params = {
+        'client_id': 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
+        'currency': 'USD',
+    }
+    return 'cnkhpnmm7ql2zlv5mjvsmmvo0'
+    # res = requests.post(BASE_URL, params=params, json=payload, headers=get_auth_headers())
+    # print(res)
+    # print(res.text)
+    # data = json.loads(res.text)
+    # return data['login']['id']
+
+def get_auth_headers():
     return {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'X-Airbnb-OAuth-Token': '',
+        'X-Airbnb-Device-Id': '12345678231',
+        'content-type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+    }
+
+def get_headers(auth_token):
+    if auth_token is None:
+        raise error.AuthenticationError(
+            'No Auth token provided. (HINT: set your Auth token using '
+            '"airbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
+            'from the AirBnB web interface.'
+        )
+    return {
+        'X-Airbnb-OAuth-Token': auth_token,
+        'X-Airbnb-Device-Id': '12345678231',
+        'content-type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
 def post_headers():
@@ -51,10 +78,11 @@ def post_headers():
         'Accept': 'application/json'
     }
 
-def get(url):
+def get(url, params):
     try:
-        # print('Get Url: {}'.format(url))
-        res = requests.get(url, auth=create_access_tuple())
+        print('Get Url: {}'.format(url))
+        print('Get Params: {}'.format(params))
+        res = requests.get(url, params=params, headers=get_headers('cnkhpnmm7ql2zlv5mjvsmmvo0'))
     except Exception as e:
         handle_request_error(e)
 
@@ -92,10 +120,10 @@ def handle_response(res):
 
 def handle_request_error(e):
     if isinstance(e, requests.exceptions.RequestException):
-        msg = 'Unexpected error communicating with MMJ.'
+        msg = 'Unexpected error communicating with AirBnB.'
         err = '{}: {}'.format(type(e).__name__, unicode(e))
     else:
-        msg = ('Unexpected error communicating with MMJ. '
+        msg = ('Unexpected error communicating with AirBnB. '
                'It looks like there\'s probably a configuration '
                'issue locally.')
         err = 'A {} was raised'.format(type(e).__name__)
@@ -126,5 +154,5 @@ def handle_error_code(json, status_code, headers):
 
 def handle_parse_error(e, status_code=None, headers=None):
     err = '{}: {}'.format(type(e).__name__, e)
-    msg = 'Error parsing MMJ JSON response. \n\n{}'.format(err)
+    msg = 'Error parsing AirBnB JSON response. \n\n{}'.format(err)
     raise error.APIError(msg, status_code, headers)

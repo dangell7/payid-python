@@ -1,6 +1,6 @@
-class MMJError(Exception):
+class AirBnBError(Exception):
     def __init__(self, error, status_code=None, headers=None):
-        super(MMJError, self).__init__(error)
+        super(AirBnBError, self).__init__(error)
 
         self.error = error
         self.status_code = status_code
@@ -10,17 +10,17 @@ class MMJError(Exception):
         return self.error
 
 
-class APIError(MMJError):
+class APIError(AirBnBError):
     pass
 
 
-class APIConnectionError(MMJError):
+class APIConnectionError(AirBnBError):
     pass
 
 
-class InvalidRequestError(MMJError):
+class InvalidRequestError(AirBnBError):
     pass
 
 
-class AuthenticationError(MMJError):
+class AuthenticationError(AirBnBError):
     pass
