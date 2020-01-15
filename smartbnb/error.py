@@ -1,6 +1,6 @@
-class AirBnBError(Exception):
+class SmartBnBError(Exception):
     def __init__(self, error, status_code=None, headers=None):
-        super(AirBnBError, self).__init__(error)
+        super(SmartBnBError, self).__init__(error)
 
         self.error = error
         self.status_code = status_code
@@ -10,17 +10,17 @@ class AirBnBError(Exception):
         return self.error
 
 
-class APIError(AirBnBError):
+class APIError(SmartBnBError):
     pass
 
 
-class APIConnectionError(AirBnBError):
+class APIConnectionError(SmartBnBError):
     pass
 
 
-class InvalidRequestError(AirBnBError):
+class InvalidRequestError(SmartBnBError):
     pass
 
 
-class AuthenticationError(AirBnBError):
+class AuthenticationError(SmartBnBError):
     pass

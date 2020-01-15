@@ -1,24 +1,24 @@
 # Cattails MMJ Python library
 
-[![CircleCI](https://circleci.com/bb/Harpangell/airbnb-python/tree/master.svg?style=svg&circle-token=3e47a0118e8b37d59b9dae0d884468d3f8f94c99)](https://circleci.com/bb/Harpangell/airbnb-python/tree/master)
+[![CircleCI](https://circleci.com/bb/Harpangell/smartbnb-python/tree/master.svg?style=svg&circle-token=3e47a0118e8b37d59b9dae0d884468d3f8f94c99)](https://circleci.com/bb/Harpangell/smartbnb-python/tree/master)
 
 ## Installation
 
 ```bash
-pip install git+git://bitbucket.org/Harpangell/airbnb-python.git@master
+pip install git+git://bitbucket.org/Harpangell/smartbnb-python.git@master
 ```
 
 To install from source, run
 
 ```bash
-git clone https://Harpangell@bitbucket.org/Harpangell/airbnb-python.git
-cd airbnb
+git clone https://Harpangell@bitbucket.org/Harpangell/smartbnb-python.git
+cd smartbnb
 python setup.py install
 ```
 
 ## Documentation
 
-Please see the [MMJ API Documentation](https://api-co.airbnb.com/Documentation/#getting-started) for the most up-to-date API documentation.
+Please see the [MMJ API Documentation](https://api-co.smartbnb.com/Documentation/#getting-started) for the most up-to-date API documentation.
 
 ### Usage
 
@@ -27,11 +27,11 @@ This library has only been tested using Python 3.6.?.
 Getting and interacting with locations:
 
 ```python
-import airbnb
+import smartbnb
 
-airbnb.api_key = 'xxx'
+smartbnb.api_key = 'xxx'
 
-facilities = airbnb.Facility.all()
+facilities = smartbnb.Facility.all()
 facilities = facilities[0]
 
 # print facilities.employees
@@ -102,7 +102,7 @@ To run the test suite, run `py.test` from the project root.
 
 ### Linting
 
-We enforce linting on the code with flake8. Run with `flake8 airbnb` from the project root.
+We enforce linting on the code with flake8. Run with `flake8 smartbnb` from the project root.
 
 ### TODOs
 

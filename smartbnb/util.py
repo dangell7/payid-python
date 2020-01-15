@@ -24,6 +24,18 @@ class CachedProperty(object):
 
 cached_property = CachedProperty
 
+def get_included_object(obj):
+    try:
+        rel = obj['_included'][0]['rel']
+        data = obj['_included'][0]['data']
+        return rel, data
+    except:
+        return None
+
+
+def has_included_objects(obj):
+    return '_included' in obj
+
 import json
 
 def read_json(path):

@@ -4,10 +4,10 @@ import requests
 import textwrap
 import json
 
-from airbnb import api_base, api_version, error
+from smartbnb import api_base, error
 
 def build_url(endpoint):
-    url = api_base + api_version + '/'
+    url = api_base + '/'
 
     if endpoint:
         url += endpoint
@@ -15,74 +15,67 @@ def build_url(endpoint):
     return url
 
 def get_env():
-    from airbnb import env
+    from smartbnb import env
 
     if not env:
         raise error.AuthenticationError(
             'No ENV provided. (HINT: set your ENV using '
-            '"airbnb.env = <DBRef>"). '
+            '"smartbnb.env = <DBRef>"). '
         )
 
     return env
 
-def get_token():
-    from airbnb import api_username, api_password
+def get_bearer_token():
+    from smartbnb import api_client_id, api_client_secret, api_base
 
-    if not api_username or not api_password:
-        raise ValueError('Invalid UserName or Password')
+    if not api_client_id or not api_client_secret:
+        raise error.AuthenticationError(
+            'No Client ID or Secret provided. (HINT: set your Client ID and Secret using '
+            '"smartbnb.api_client_ID = <CLIENT_ID/API_KEY>"). You can generate Client ID and Secret pair keys '
+            'from the SmartBnB web interface.'
+        )
 
-    BASE_URL = 'https://api.airbnb.com/v2/logins'
+    BASE_URL = 'https://auth.smartbnb.io/oauth/token'
     payload = {
-        'email': api_username,
-        'password': api_password,
+        'client_id': api_client_id,
+        'client_secret': api_client_secret,
+        'audience': 'api.smartbnb.io',
+        'grant_type': 'client_credentials'
     }
 
-    # Client ID does NOT change
-    params = {
-        'client_id': 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
-        'currency': 'USD',
-    }
-    return 'cnkhpnmm7ql2zlv5mjvsmmvo0'
-    # res = requests.post(BASE_URL, params=params, json=payload, headers=get_auth_headers())
-    # print(res)
-    # print(res.text)
-    # data = json.loads(res.text)
-    # return data['login']['id']
-
-def get_auth_headers():
-    return {
-        'X-Airbnb-OAuth-Token': '',
-        'X-Airbnb-Device-Id': '12345678231',
-        'content-type': 'application/json',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+    auth_headers = {
+        'Content-Type': 'application/json',
     }
 
-def get_headers(auth_token):
+    try:
+        print('Url: {}'.format(BASE_URL))
+        print('Payload: {}'.format(payload))
+        print('Auth Headers: {}'.format(auth_headers))
+        res = requests.post(BASE_URL, json=payload, headers=auth_headers)
+    except Exception as e:
+        handle_request_error(e)
+
+    return handle_response(res)
+
+def headers(auth_token):
     if auth_token is None:
         raise error.AuthenticationError(
             'No Auth token provided. (HINT: set your Auth token using '
-            '"airbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
-            'from the AirBnB web interface.'
+            '"smartbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
+            'from the SmartBnB web interface.'
         )
     return {
-        'X-Airbnb-OAuth-Token': auth_token,
-        'X-Airbnb-Device-Id': '12345678231',
-        'content-type': 'application/json',
+        'authorization': 'Bearer {}'.format(auth_token),
+        'accept': 'application/json',
+        'content-type': 'application/vnd.smartbnb.20190904+json',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
-def post_headers():
-
-    return {
-        'Content-Type': 'text/plain',
-        'Accept': 'application/json'
-    }
-
-def get(url, params):
+def get(auth_token, url, params):
     try:
         print('Get Url: {}'.format(url))
         print('Get Params: {}'.format(params))
-        res = requests.get(url, params=params, headers=get_headers('cnkhpnmm7ql2zlv5mjvsmmvo0'))
+        res = requests.get(url, params=params, headers=headers(auth_token))
     except Exception as e:
         handle_request_error(e)
 
@@ -120,10 +113,10 @@ def handle_response(res):
 
 def handle_request_error(e):
     if isinstance(e, requests.exceptions.RequestException):
-        msg = 'Unexpected error communicating with AirBnB.'
+        msg = 'Unexpected error communicating with SmartBnB.'
         err = '{}: {}'.format(type(e).__name__, unicode(e))
     else:
-        msg = ('Unexpected error communicating with AirBnB. '
+        msg = ('Unexpected error communicating with SmartBnB. '
                'It looks like there\'s probably a configuration '
                'issue locally.')
         err = 'A {} was raised'.format(type(e).__name__)
@@ -154,5 +147,5 @@ def handle_error_code(json, status_code, headers):
 
 def handle_parse_error(e, status_code=None, headers=None):
     err = '{}: {}'.format(type(e).__name__, e)
-    msg = 'Error parsing AirBnB JSON response. \n\n{}'.format(err)
+    msg = 'Error parsing SmartBnB JSON response. \n\n{}'.format(err)
     raise error.APIError(msg, status_code, headers)
