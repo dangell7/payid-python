@@ -1,4 +1,4 @@
-# Cattails MMJ Python library
+# Smart BnB Python library
 
 [![CircleCI](https://circleci.com/bb/Harpangell/smartbnb-python/tree/master.svg?style=svg&circle-token=3e47a0118e8b37d59b9dae0d884468d3f8f94c99)](https://circleci.com/bb/Harpangell/smartbnb-python/tree/master)
 
@@ -18,40 +18,33 @@ python setup.py install
 
 ## Documentation
 
-Please see the [MMJ API Documentation](https://api-co.smartbnb.com/Documentation/#getting-started) for the most up-to-date API documentation.
+Please see the [Smart BnB API Documentation](https://api-co.smartbnb.com/Documentation/#getting-started) for the most up-to-date API documentation.
 
 ### Usage
 
 This library has only been tested using Python 3.6.?.
 
-Getting and interacting with locations:
+Getting and interacting with accounts:
 
 ```python
 import smartbnb
 
 smartbnb.api_key = 'xxx'
+smartbnb.env = 'Prod'
+smartbnb.api_client_id = 'xxx'
+smartbnb.api_client_secret = 'xxx'
+smartbnb.api_version = 'v2'
 
-facilities = smartbnb.Facility.all()
-facilities = facilities[0]
+client = smartbnb.AccountOAuth()
 
-# print facilities.employees
-# print facilities.harvests
-# print facilities.labtests
-# print facilities.items
-# print facilities.packages
-# print facilities.patients
-# print facilities.plantbatches
-# print facilities.plants
-# print facilities.rooms
-# print facilities.sales
-# print facilities.strains
-# print facilities.transfers
-# print facilities.unitsofmeasures
+properties = client.properties
+propertyName = properties[0].name
+print(propertyName)
 ```
 
-Properties are cached on each model instance. To refresh, do `facility = Facility.get(facility.LicenseNumber)`. (TODO: allow properties to be refreshed manually)
+Properties are cached on each model instance. To refresh, do `property = client.get_property(propertyID)`. (TODO: allow properties to be refreshed manually)
 
-Objects embedded in API responses are added as properties on each model instance. To refresh, do `facilities.refresh()`.
+Objects embedded in API responses are added as properties on each model instance. To refresh, do `properties.refresh()`.
 
 Interacting with sales:
 
@@ -106,14 +99,4 @@ We enforce linting on the code with flake8. Run with `flake8 smartbnb` from the 
 
 ### TODOs
 
-- create method for Sales
-- create method for Employees
-- create method for Harvests
-- create method for Lab Tests
-- create method for Patients
-- create method for Plant Batches
-- create method for Plants
-- create method for Rooms
-- create method for Strains
-- create method for Transfers
-- create method for Units of Measures
+- create method for Listings
