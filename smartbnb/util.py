@@ -32,7 +32,6 @@ def get_included_object(obj):
     except:
         return None
 
-
 def has_included_objects(obj):
     return '_included' in obj
 
@@ -41,3 +40,11 @@ import json
 def read_json(path):
     with open(path) as json_file:
         return json.load(json_file)
+
+def from_decimal_to_int(decimal):
+    decimal = '{0:.2f}'.format(float(decimal))
+    return int(re.sub('\.', '', decimal))
+
+def from_int_to_decimal(integer):
+    string = str(integer)
+    return round(float('{}.{}'.format(string[:-2], string[-2:])), 2)

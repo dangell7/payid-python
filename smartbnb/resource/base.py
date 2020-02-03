@@ -51,45 +51,27 @@ class AccountOAuth(SmartBnBOAuthResource):
         return new_properties
 
     # @cached_property
-    def get_calendar(self, id):
+    def get_calendar(self, id, start_date, end_date):
         num_pages = 0
         per_page = 0
         new_calendar_days = []
         params = {
-            'start_date': '2020-01-01',
-            'end_date': '2020-01-31'
+            'start_date': start_date,
+            'end_date': end_date,
         }
         res = client.get(self.access_token, Calendar.get_url(id), params)
-        # Pagination
-        if 'total_pages' in res['_pagination']:
-            num_pages = res['_pagination']['total_pages']
-        if 'per_page' in res['_pagination']:
-            per_page = res['_pagination']['per_page']
-
-        # Add First Page Results
         res = res['data']
-        new_calendar_days + [Calendar(**i) for i in res]
-        # for page in range(2, num_pages + 1):
-        #     print(page)
-        #     params = {
-        #         'page': page,
-        #         'per_page': per_page
-        #     }
-        #     res = client.get(self.access_token, Calendar.list_url(), params)
-        #     # Add Next Page Results
-        #     res = res['data']
-        #     new_calendar_days + [Calendar(**i) for i in res]
-        return new_calendar_days
+        return Calendar(**res)
 
     # @cached_property
-    def get_reservations(self, id):
+    def get_reservations(self, id, start_date, end_date):
         num_pages = 0
         per_page = 0
         new_reservations = []
         params = {
             'listings[]': id,
-            # 'start_date': '2019-12-01',
-            # 'end_date': '2019-12-31'
+            'start_date': start_date,
+            'end_date': end_date
         }
         params = "&".join("%s=%s" % (k,v) for k,v in params.items())
         res = client.get(self.access_token, Reservation.list_url(), params)
@@ -104,7 +86,6 @@ class AccountOAuth(SmartBnBOAuthResource):
         res = res['data']
         new_reservations + [Reservation(**i) for i in res]
         for page in range(2, num_pages + 1):
-            print(page)
             params = {
                 'page': page,
                 'per_page': per_page
