@@ -84,7 +84,7 @@ class AccountOAuth(SmartBnBOAuthResource):
 
         # Add First Page Results
         res = res['data']
-        new_reservations + [Reservation(**i) for i in res]
+        new_reservations.extend(Reservation(**i) for i in res)
         for page in range(2, num_pages + 1):
             params = {
                 'page': page,
@@ -93,8 +93,20 @@ class AccountOAuth(SmartBnBOAuthResource):
             res = client.get(self.access_token, Reservation.list_url(), params)
             # Add Next Page Results
             res = res['data']
-            new_reservations + [Reservation(**i) for i in res]
+            new_reservations.extend(Reservation(**i) for i in res)
         return new_reservations
+
+    def update_calendar(self,
+                    propertyHash=None,
+                    batch_array=None):
+
+        result = Calendar.update(
+            self.access_token,
+            propertyHash,
+            batch_array
+        )
+
+        return result
 
     def __unicode__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.id)
