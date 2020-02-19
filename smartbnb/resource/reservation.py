@@ -4,9 +4,7 @@ from smartbnb.resource import SmartBnBOAuthResource
 from smartbnb.resource.base import (
     AccountOAuth
 )
-from smartbnb.resource.calendar import (
-    DayPrice
-)
+
 from smartbnb.util import (
     cached_property,
 )
@@ -38,23 +36,23 @@ class Reservation(SmartBnBOAuthResource):
         self.occupancy = ReservationOccupancy(**kwargs['occupancy'])
         self.check_in = kwargs['check_in']
         self.check_out = kwargs['check_out']
-        self.subtotal = DayPrice(**kwargs['subtotal'])
+        self.subtotal = ReservationPrice(**kwargs['subtotal'])
 
 
     def to_any_object(self):
         return {
-            'uuid': self.uuid,
-            'guest_uuid': self.guest_uuid,
+            'UUID': self.uuid,
+            'guestUUID': self.guest_uuid,
             'provider': self.provider,
-            'listing_id': self.listing_id,
-            'reservation_code': self.reservation_code,
+            'listingID': self.listing_id,
+            'reservationCode': self.reservation_code,
             'status': self.status,
-            'booked_at': self.booked_at,
-            'instant_booked': self.instant_booked,
+            'bookedAt': self.booked_at,
+            'instantBooked': self.instant_booked,
             'nights': self.nights,
             'occupancy': self.occupancy.to_any_object(),
-            'check_in': self.check_in,
-            'check_out': self.check_out,
+            'checkIn': self.check_in,
+            'checkOut': self.check_out,
             'subtotal': self.subtotal.to_any_object(),
         }
 
@@ -73,4 +71,17 @@ class ReservationOccupancy(SmartBnBOAuthResource):
             'children': self.children,
             'pets': self.pets,
             'infants': self.infants
+        }
+
+class ReservationPrice(SmartBnBOAuthResource):
+
+    def refresh_from(self, **kwargs):
+        self.amount = kwargs['amount']
+        self.currency = kwargs['currency']
+
+
+    def to_any_object(self):
+        return {
+            'amount': self.amount,
+            'currency': self.currency
         }
