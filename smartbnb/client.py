@@ -71,6 +71,20 @@ def headers(auth_token):
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
+def put_headers(auth_token):
+    if auth_token is None:
+        raise error.AuthenticationError(
+            'No Auth token provided. (HINT: set your Auth token using '
+            '"smartbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
+            'from the SmartBnB web interface.'
+        )
+    return {
+        'authorization': 'Bearer {}'.format(auth_token),
+        'accept': 'application/json',
+        'content-type': 'application/vnd.smartbnb.20191231+json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+    }
+
 def get(auth_token, url, params):
     try:
         print('Get Url: {}'.format(url))
@@ -81,10 +95,12 @@ def get(auth_token, url, params):
 
     return handle_response(res)
 
-def post(url, json):
+def put(auth_token, url, params, json):
     try:
-        # print('Post Url: {}'.format(url))
-        res = requests.post(url, headers=post_headers(), json=json)
+        print('Put Url: {}'.format(url))
+        print('Put Params: {}'.format(params))
+        print('Put Json: {}'.format(json))
+        res = requests.put(url, params=params, headers=put_headers(auth_token), json=json)
     except Exception as e:
         handle_request_error(e)
 
