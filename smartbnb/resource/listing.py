@@ -22,7 +22,7 @@ class Listing(SmartBnBOAuthResource):
         return super(Listing, cls).list_url() + 'listings/' + id + '/'
 
     def refresh_from(self, **kwargs):
-        print(kwargs['id'])
+        # print('Smart BnB Listing: {}'.format(kwargs))
         self.id = kwargs['id']
         self.provider = kwargs['provider']
         self.name = kwargs['name']
