@@ -25,7 +25,7 @@ class Property(SmartBnBOAuthResource):
         return super(Property, cls).list_url() + 'properties/' + id
 
     def refresh_from(self, **kwargs):
-        print('Smart BnB Property: {}'.format(kwargs))
+        # print('Smart BnB Property: {}'.format(kwargs))
         self.id = kwargs['id']
         self.name = kwargs['name']
         self.picture = kwargs['picture']
@@ -33,7 +33,7 @@ class Property(SmartBnBOAuthResource):
         if 'listings' in kwargs:
             self.listings = kwargs['listings']
         if has_included_objects(kwargs):
-            print('Has Included Objects')
+            # print('Has Included Objects')
             # Listing Objects
             rel, listings = get_included_object(kwargs)
             self.listings = [

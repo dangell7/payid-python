@@ -57,12 +57,9 @@ class SmartBnBOAuthResource(SmartBnBResource):
 
     def __init__(self, **kwargs):
         if not kwargs:
-            print('Getting New Bearer Token')
             kwargs = client.get_bearer_token()
 
         if 'access_token' in kwargs:
-            print(kwargs['access_token'])
-            print('Checking Expiration of Access Token')
             # if kwargs['expires_at'] > time.time():
             #     print('Expirated of Access Token... Refreshing...')
             #     kwargs = client.get_bearer_token()

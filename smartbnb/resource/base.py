@@ -27,7 +27,9 @@ class AccountOAuth(SmartBnBOAuthResource):
     @cached_property
     def properties(self):
         new_properties = []
-        params = None
+        params = {
+            'include': 'listings'
+        }
         res = client.get(self.access_token, Property.list_url(), params)
 
         # Pagination
