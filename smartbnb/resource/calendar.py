@@ -26,14 +26,7 @@ def get_arrays_from_array(batch_days_array):
     # Add non 60 batch (last)
     if len(updated_calendar_days) > 0:
         updated_calendar_arrays.append(updated_calendar_days)
-
-    return [[{
-          "date": "2020-02-22",
-          "price": {
-            "amount": 91,
-          }
-    }]]
-    # return updated_calendar_arrays
+    return updated_calendar_arrays
 
 class Calendar(SmartBnBOAuthResource):
 
