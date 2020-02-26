@@ -24,6 +24,7 @@ class Listing(SmartBnBOAuthResource):
     def refresh_from(self, **kwargs):
         # print('Smart BnB Listing: {}'.format(kwargs))
         self.id = kwargs['id']
+        self.property_id = kwargs['property_id']
         self.provider = kwargs['provider']
         self.name = kwargs['name']
         self.picture = kwargs['picture']
@@ -33,6 +34,10 @@ class Listing(SmartBnBOAuthResource):
         self.checkout = kwargs['checkout']
         self.capacity = Capacity(**kwargs['capacity'])
         self.rating = kwargs['rating']
+        self.url = kwargs['url']
+        self.user_id = kwargs['user_id']
+        self.room_type = kwargs['room_type']
+        self.currency = kwargs['currency']
 
 
     def to_any_object(self):
@@ -45,6 +50,10 @@ class Listing(SmartBnBOAuthResource):
             'checkout': self.checkout,
             'capacity': self.capacity,
             'rating': self.rating,
+            'url': self.url,
+            'user_id': self.user_id,
+            'room_type': self.room_type,
+            'currency': self.currency,
         }
 
 class Capacity(SmartBnBOAuthResource):
