@@ -67,7 +67,7 @@ def headers(auth_token):
     return {
         'authorization': 'Bearer {}'.format(auth_token),
         'accept': 'application/json',
-        'content-type': 'application/vnd.smartbnb.20190904+json',
+        'content-type': 'application/vnd.smartbnb.20191201+json',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
