@@ -44,7 +44,9 @@ class AccountOAuth(SmartBnBOAuthResource):
 
         # More Results
         for page in range(2, num_pages + 1):
-            params = {}
+            params = {
+                'include': 'listings'
+            }
             params['page'] = page
             params['per_page'] = per_page
             res = client.get(self.access_token, Property.list_url(), params)
@@ -87,11 +89,17 @@ class AccountOAuth(SmartBnBOAuthResource):
         # Add First Page Results
         res = res['data']
         new_reservations.extend(Reservation(**i) for i in res)
+
+        # More Results
         for page in range(2, num_pages + 1):
             params = {
-                'page': page,
-                'per_page': per_page
+                'listings[]': id,
+                'start_date': start_date,
+                'end_date': end_date
             }
+            params['page'] = page
+            params['per_page'] = per_page
+            params = "&".join("%s=%s" % (k,v) for k,v in params.items())
             res = client.get(self.access_token, Reservation.list_url(), params)
             # Add Next Page Results
             res = res['data']
