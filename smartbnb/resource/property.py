@@ -25,13 +25,16 @@ class Property(SmartBnBOAuthResource):
         return super(Property, cls).list_url() + 'properties/' + id
 
     def refresh_from(self, **kwargs):
-        # print('Smart BnB Property: {}'.format(kwargs))
+        print('Smart BnB Property: {} ID: {}'.format(kwargs['name'], kwargs['id']))
+        print('Smart BnB Property: {}'.format(kwargs))
         self.id = kwargs['id']
         self.name = kwargs['name']
+        self.listed = kwargs['listed']
         self.picture = kwargs['picture']
         self.address = Address(**kwargs['address'])
         if 'listings' in kwargs:
             self.listings = kwargs['listings']
+
         if has_included_objects(kwargs):
             # print('Has Included Objects')
             # Listing Objects
@@ -42,11 +45,11 @@ class Property(SmartBnBOAuthResource):
                 in listings
             ]
 
-
     def to_any_object(self):
         return {
             'id': self.id,
             'name': self.name,
+            'listed': self.listed,
             'picture': self.picture,
             'address': self.address.to_any_object(),
             'listings': self.listings,

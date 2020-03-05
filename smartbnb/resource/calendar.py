@@ -55,6 +55,7 @@ class Calendar(SmartBnBOAuthResource):
         # return cls(propertyID, **res)
 
     def refresh_from(self, **kwargs):
+        # print('Smart BnB Calendar: {}'.format(kwargs))
         self.listing_id = kwargs['listing_id']
         self.provider = kwargs['provider']
         self.start_date = kwargs['start_date']

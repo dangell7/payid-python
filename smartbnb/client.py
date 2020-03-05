@@ -84,9 +84,9 @@ def put_headers(auth_token):
 
 def get(auth_token, url, params):
     try:
-        # print('Get Token: {}'.format(auth_token))
-        # print('Get Url: {}'.format(url))
-        # print('Get Params: {}'.format(params))
+        print('Get Token: {}'.format(auth_token))
+        print('Get Url: {}'.format(url))
+        print('Get Params: {}'.format(params))
         res = requests.get(url, params=params, headers=headers(auth_token))
     except Exception as e:
         handle_request_error(e)
