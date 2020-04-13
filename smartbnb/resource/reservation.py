@@ -23,7 +23,7 @@ class Reservation(SmartBnBOAuthResource):
         return super(Reservation, cls).get_url() + 'calendar/reservations/' + id + '/'
 
     def refresh_from(self, **kwargs):
-        # print('Smart BnB Reservations: {}'.format(kwargs))
+        print('Smart BnB Reservations: {}'.format(kwargs))
         self.uuid = kwargs['uuid']
         self.guest_uuid = kwargs['guest_uuid']
         self.provider = kwargs['provider']

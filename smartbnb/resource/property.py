@@ -34,6 +34,7 @@ class Property(SmartBnBOAuthResource):
         self.address = Address(**kwargs['address'])
         if 'listings' in kwargs:
             self.listings = kwargs['listings']
+            print('{} Listings for {}'.format(len(self.listings), self.name))
 
         if has_included_objects(kwargs):
             # print('Has Included Objects')
