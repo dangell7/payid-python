@@ -26,7 +26,7 @@ class Property(SmartBnBOAuthResource):
 
     def refresh_from(self, **kwargs):
         print('Smart BnB Property: {} ID: {}'.format(kwargs['name'], kwargs['id']))
-        print('Smart BnB Property: {}'.format(kwargs))
+        # print('Smart BnB Property: {}'.format(kwargs))
         self.id = kwargs['id']
         self.name = kwargs['name']
         self.listed = kwargs['listed']
