@@ -4,7 +4,7 @@ import requests
 import textwrap
 import json
 
-from smartbnb import api_base, error
+from guesty import api_base, error
 
 def build_url(endpoint):
     url = api_base + '/'
@@ -15,31 +15,31 @@ def build_url(endpoint):
     return url
 
 def get_env():
-    from smartbnb import env
+    from guesty import env
 
     if not env:
         raise error.AuthenticationError(
             'No ENV provided. (HINT: set your ENV using '
-            '"smartbnb.env = <DBRef>"). '
+            '"guesty.env = <DBRef>"). '
         )
 
     return env
 
 def get_bearer_token():
-    from smartbnb import api_client_id, api_client_secret, api_base
+    from guesty import api_client_id, api_client_secret, api_base
 
     if not api_client_id or not api_client_secret:
         raise error.AuthenticationError(
             'No Client ID or Secret provided. (HINT: set your Client ID and Secret using '
-            '"smartbnb.api_client_ID = <CLIENT_ID/API_KEY>"). You can generate Client ID and Secret pair keys '
-            'from the SmartBnB web interface.'
+            '"guesty.api_client_ID = <CLIENT_ID/API_KEY>"). You can generate Client ID and Secret pair keys '
+            'from the guesty web interface.'
         )
 
-    BASE_URL = 'https://auth.smartbnb.io/oauth/token'
+    BASE_URL = 'https://auth.guesty.io/oauth/token'
     payload = {
         'client_id': api_client_id,
         'client_secret': api_client_secret,
-        'audience': 'api.smartbnb.io',
+        'audience': 'api.guesty.io',
         'grant_type': 'client_credentials'
     }
 
@@ -58,13 +58,13 @@ def headers(auth_token):
     if auth_token is None:
         raise error.AuthenticationError(
             'No Auth token provided. (HINT: set your Auth token using '
-            '"smartbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
-            'from the SmartBnB web interface.'
+            '"guesty.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
+            'from the guesty web interface.'
         )
     return {
         'authorization': 'Bearer {}'.format(auth_token),
         'accept': 'application/json',
-        'content-type': 'application/vnd.smartbnb.20191201+json',
+        'content-type': 'application/vnd.guesty.20191201+json',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
@@ -72,13 +72,13 @@ def put_headers(auth_token):
     if auth_token is None:
         raise error.AuthenticationError(
             'No Auth token provided. (HINT: set your Auth token using '
-            '"smartbnb.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
-            'from the SmartBnB web interface.'
+            '"guesty.auth_token = <AUTH-TOKEN>"). You can generate Auth Tokens keys '
+            'from the guesty web interface.'
         )
     return {
         'authorization': 'Bearer {}'.format(auth_token),
         'accept': 'application/json',
-        'content-type': 'application/vnd.smartbnb.20191231+json',
+        'content-type': 'application/vnd.guesty.20191231+json',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
     }
 
@@ -128,10 +128,10 @@ def handle_response(res):
 
 def handle_request_error(e):
     if isinstance(e, requests.exceptions.RequestException):
-        msg = 'Unexpected error communicating with SmartBnB.'
+        msg = 'Unexpected error communicating with guesty.'
         err = '{}: {}'.format(type(e).__name__, unicode(e))
     else:
-        msg = ('Unexpected error communicating with SmartBnB. '
+        msg = ('Unexpected error communicating with guesty. '
                'It looks like there\'s probably a configuration '
                'issue locally.')
         err = 'A {} was raised'.format(type(e).__name__)
@@ -162,5 +162,5 @@ def handle_error_code(json, status_code, headers):
 
 def handle_parse_error(e, status_code=None, headers=None):
     err = '{}: {}'.format(type(e).__name__, e)
-    msg = 'Error parsing SmartBnB JSON response. \n\n{}'.format(err)
+    msg = 'Error parsing guesty JSON response. \n\n{}'.format(err)
     raise error.APIError(msg, status_code, headers)

@@ -1,6 +1,6 @@
-class SmartBnBError(Exception):
+class guestyError(Exception):
     def __init__(self, error, status_code=None, headers=None):
-        super(SmartBnBError, self).__init__(error)
+        super(guestyError, self).__init__(error)
 
         self.error = error
         self.status_code = status_code
@@ -10,17 +10,17 @@ class SmartBnBError(Exception):
         return self.error
 
 
-class APIError(SmartBnBError):
+class APIError(guestyError):
     pass
 
 
-class APIConnectionError(SmartBnBError):
+class APIConnectionError(guestyError):
     pass
 
 
-class InvalidRequestError(SmartBnBError):
+class InvalidRequestError(guestyError):
     pass
 
 
-class AuthenticationError(SmartBnBError):
+class AuthenticationError(guestyError):
     pass

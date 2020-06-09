@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
-from smartbnb import client, error
-from smartbnb.resource import SmartBnBOAuthResource
-from smartbnb.resource.base import (
+from guesty import client, error
+from guesty.resource import guestyOAuthResource
+from guesty.resource.base import (
     AccountOAuth
 )
-from smartbnb.util import (
+from guesty.util import (
     cached_property,
     from_int_to_decimal,
 )
@@ -28,7 +28,7 @@ def get_arrays_from_array(batch_days_array):
         updated_calendar_arrays.append(updated_calendar_days)
     return updated_calendar_arrays
 
-class Calendar(SmartBnBOAuthResource):
+class Calendar(guestyOAuthResource):
 
     @classmethod
     def list_url(cls, id):
@@ -55,7 +55,7 @@ class Calendar(SmartBnBOAuthResource):
         # return cls(propertyID, **res)
 
     def refresh_from(self, **kwargs):
-        # print('Smart BnB Calendar: {}'.format(kwargs))
+        # print('Guesty Calendar: {}'.format(kwargs))
         self.listing_id = kwargs['listing_id']
         self.provider = kwargs['provider']
         self.start_date = kwargs['start_date']
@@ -78,7 +78,7 @@ class Calendar(SmartBnBOAuthResource):
             'days': days_collection,
         }
 
-class Day(SmartBnBOAuthResource):
+class Day(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.date = kwargs['date']
@@ -99,7 +99,7 @@ class Day(SmartBnBOAuthResource):
             'reservation': self.reservation
         }
 
-class DayStatus(SmartBnBOAuthResource):
+class DayStatus(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.reason = kwargs['reason']
@@ -112,7 +112,7 @@ class DayStatus(SmartBnBOAuthResource):
             'available': self.available
         }
 
-class DayPrice(SmartBnBOAuthResource):
+class DayPrice(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.amount = from_int_to_decimal(kwargs['amount'])

@@ -1,20 +1,20 @@
 from __future__ import unicode_literals
-from smartbnb import client, error
-from smartbnb.resource import SmartBnBOAuthResource
-from smartbnb.resource.base import (
+from guesty import client, error
+from guesty.resource import guestyOAuthResource
+from guesty.resource.base import (
     AccountOAuth
 )
-from smartbnb.util import (
+from guesty.util import (
     get_included_object,
     has_included_objects,
     cached_property,
 )
-from smartbnb.resource.listing import Listing
+from guesty.resource.listing import Listing
 
 import time
 import json
 
-class Property(SmartBnBOAuthResource):
+class Property(guestyOAuthResource):
 
     @classmethod
     def list_url(cls):
@@ -25,8 +25,8 @@ class Property(SmartBnBOAuthResource):
         return super(Property, cls).list_url() + 'properties/' + id
 
     def refresh_from(self, **kwargs):
-        print('Smart BnB Property: {} ID: {}'.format(kwargs['name'], kwargs['id']))
-        # print('Smart BnB Property: {}'.format(kwargs))
+        print('Guesty Property: {} ID: {}'.format(kwargs['name'], kwargs['id']))
+        # print('Guesty Property: {}'.format(kwargs))
         self.id = kwargs['id']
         self.name = kwargs['name']
         self.listed = kwargs['listed']
@@ -56,7 +56,7 @@ class Property(SmartBnBOAuthResource):
             'listings': self.listings,
         }
 
-class Address(SmartBnBOAuthResource):
+class Address(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.number = kwargs['number']

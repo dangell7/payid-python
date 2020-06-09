@@ -1,18 +1,18 @@
 from __future__ import unicode_literals
-from smartbnb import client, error
-from smartbnb.resource import SmartBnBOAuthResource
-from smartbnb.resource.base import (
+from guesty import client, error
+from guesty.resource import guestyOAuthResource
+from guesty.resource.base import (
     AccountOAuth
 )
 
-from smartbnb.util import (
+from guesty.util import (
     cached_property,
 )
 
 import time
 import json
 
-class Reservation(SmartBnBOAuthResource):
+class Reservation(guestyOAuthResource):
 
     @classmethod
     def list_url(cls):
@@ -23,7 +23,7 @@ class Reservation(SmartBnBOAuthResource):
         return super(Reservation, cls).get_url() + 'calendar/reservations/' + id + '/'
 
     def refresh_from(self, **kwargs):
-        # print('Smart BnB Reservations: {}'.format(kwargs))
+        # print('Guesty Reservations: {}'.format(kwargs))
         self.uuid = kwargs['uuid']
         self.guest_uuid = kwargs['guest_uuid']
         self.provider = kwargs['provider']
@@ -56,7 +56,7 @@ class Reservation(SmartBnBOAuthResource):
             'subtotal': self.subtotal.to_any_object(),
         }
 
-class ReservationOccupancy(SmartBnBOAuthResource):
+class ReservationOccupancy(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.adults = kwargs['adults']
@@ -73,7 +73,7 @@ class ReservationOccupancy(SmartBnBOAuthResource):
             'infants': self.infants
         }
 
-class ReservationPrice(SmartBnBOAuthResource):
+class ReservationPrice(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.amount = kwargs['amount']

@@ -1,5 +1,5 @@
 .eggs
-smartbnb.egg-info
+guesty.egg-info
 *.pyc
 venv
 .cache

@@ -1,13 +1,13 @@
 from __future__ import unicode_literals
-from smartbnb import client
-from smartbnb.util import read_json
+from guesty import client
+from guesty.util import read_json
 from basedir import basedir
 
 
 class PrintableResource(object):
 
     def __unicode__(self):
-        return '<SmartBnB::{} {}>'.format(self.__class__.__name__, self.id)
+        return '<guesty::{} {}>'.format(self.__class__.__name__, self.id)
 
     def __str__(self):
         return unicode(self).encode('utf-8')
@@ -22,7 +22,7 @@ class PrintableResource(object):
         return '\n{{\n\t{}\n}}'.format('\n\t'.join(attrs))
 
 
-class SmartBnBResource(PrintableResource):
+class guestyResource(PrintableResource):
 
     @classmethod
     def list_url(cls, id=None):
@@ -47,7 +47,7 @@ class SmartBnBResource(PrintableResource):
     def instance_url(self):
         return self.__class__.retrieve_url(self.id)
 
-class SmartBnBOAuthResource(SmartBnBResource):
+class guestyOAuthResource(guestyResource):
 
     @classmethod
     def list_url(cls, id=None):
@@ -64,10 +64,10 @@ class SmartBnBOAuthResource(SmartBnBResource):
             #     print('Expirated of Access Token... Refreshing...')
             #     kwargs = client.get_bearer_token()
             self.access_token = kwargs['access_token']
-        super(SmartBnBOAuthResource, self).__init__(**kwargs)
+        super(guestyOAuthResource, self).__init__(**kwargs)
 
     def __unicode__(self):
-        return '<SmartBnB::{} {} at OAuth {}>'.format(
+        return '<guesty::{} {} at OAuth {}>'.format(
             self.__class__.__name__,
             self.access_token,
         )

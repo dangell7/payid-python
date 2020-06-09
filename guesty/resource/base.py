@@ -1,6 +1,6 @@
-from smartbnb import client
-from smartbnb.resource import SmartBnBOAuthResource
-from smartbnb.util import (
+from guesty import client
+from guesty.resource import guestyOAuthResource
+from guesty.util import (
     cached_property,
     read_json,
 )
@@ -8,7 +8,7 @@ from basedir import basedir
 
 import time
 
-class AccountOAuth(SmartBnBOAuthResource):
+class AccountOAuth(guestyOAuthResource):
 
     def refresh_from(self, **kwargs):
         self.scope = kwargs['scope']
@@ -129,7 +129,7 @@ class AccountOAuth(SmartBnBOAuthResource):
             'token_type': self.token_type,
         }
 
-from smartbnb.resource.property import Property  # noqa - avoid circular import
-from smartbnb.resource.listing import Listing  # noqa - avoid circular import
-from smartbnb.resource.reservation import Reservation  # noqa - avoid circular import
-from smartbnb.resource.calendar import Calendar  # noqa - avoid circular import
+from guesty.resource.property import Property  # noqa - avoid circular import
+from guesty.resource.listing import Listing  # noqa - avoid circular import
+from guesty.resource.reservation import Reservation  # noqa - avoid circular import
+from guesty.resource.calendar import Calendar  # noqa - avoid circular import
