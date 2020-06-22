@@ -1,16 +1,7 @@
 from __future__ import unicode_literals
-from guesty import client, error
-from guesty.resource import guestyOAuthResource
-from guesty.resource.base import (
-    AccountOAuth
-)
-from guesty.util import (
-    cached_property,
-    from_int_to_decimal,
-)
+from guesty import client
+from guesty.resource import GuestyAccountResource
 
-import time
-import json
 
 def get_arrays_from_array(batch_days_array):
     updated_calendar_arrays = []
@@ -28,41 +19,37 @@ def get_arrays_from_array(batch_days_array):
         updated_calendar_arrays.append(updated_calendar_days)
     return updated_calendar_arrays
 
-class Calendar(guestyOAuthResource):
+
+def format_array(listingHash, batch_days_array):
+    new_array = []
+    for day in batch_days_array:
+        day['listingId'] = listingHash
+        new_array.append(day)
+    return new_array
+
+
+class Calendar(GuestyAccountResource):
 
     @classmethod
-    def list_url(cls, id):
-        return super(Calendar, cls).list_url() + 'calendar/' + id
+    def list_url(cls, account_id):
+        return super(Calendar, cls).list_url(account_id) + 'listings/calendars'
 
     @classmethod
     def get_url(cls, id):
-        return super(Calendar, cls).list_url() + 'calendar/' + id
+        print('GET CAL')
+        return super(Calendar, cls).list_url(None) + 'listings/' + id + '/calendar'
 
     @classmethod
-    def update(cls,
-            access_token,
-            propertyHash,
-            batch_days_array):
+    def update(cls, listingHash, batch_days_array):
 
-        params = {
-            'type': 'property'
-        }
-
-        arrays = get_arrays_from_array(batch_days_array)
-        for array in arrays:
-            res = client.put(access_token, cls.list_url(propertyHash), params, array)
-            print(res)
-        # return cls(propertyID, **res)
+        batch_days_array = format_array(listingHash, batch_days_array)
+        res = client.put(cls.list_url(None), batch_days_array)
+        return res
 
     def refresh_from(self, **kwargs):
-        # print('Guesty Calendar: {}'.format(kwargs))
-        self.listing_id = kwargs['listing_id']
-        self.provider = kwargs['provider']
-        self.start_date = kwargs['start_date']
-        self.end_date = kwargs['end_date']
         days_collection = []
         for day in kwargs['days']:
-            days_collection.append(Day(**day))
+            days_collection.append(Day(self.account_id, **day))
         self.days = days_collection
 
     def to_any_object(self):
@@ -71,56 +58,83 @@ class Calendar(guestyOAuthResource):
             days_collection.append(day.to_any_object())
 
         return {
-            'listing_id': self.listing_id,
-            'provider': self.provider,
-            'start_date': self.start_date,
-            'end_date': self.end_date,
             'days': days_collection,
         }
 
-class Day(guestyOAuthResource):
+
+class Day(GuestyAccountResource):
 
     def refresh_from(self, **kwargs):
-        self.date = kwargs['date']
-        self.day = kwargs['day']
-        self.status = DayStatus(**kwargs['status'])
-        self.price = DayPrice(**kwargs['price'])
-        self.reservation = {}
+        self.v = None
+        self.id = None
+        self.accountId = None
+        if '__v' in kwargs:
+            self.v = kwargs['__v']
+        if '_id' in kwargs:
+            self.id = kwargs['_id']
+        if 'accountId' in kwargs:
+            self.accountId = kwargs['accountId']
 
-
-    def to_any_object(self):
-        return {
-            'listing_id': self.listing_id,
-            'provider': self.provider,
-            'date': self.date,
-            'day': self.day,
-            'status': self.status.to_any_object(),
-            'price': self.price.to_any_object(),
-            'reservation': self.reservation
-        }
-
-class DayStatus(guestyOAuthResource):
-
-    def refresh_from(self, **kwargs):
-        self.reason = kwargs['reason']
-        self.available = kwargs['available']
-
-
-    def to_any_object(self):
-        return {
-            'reason': self.reason,
-            'available': self.available
-        }
-
-class DayPrice(guestyOAuthResource):
-
-    def refresh_from(self, **kwargs):
-        self.amount = from_int_to_decimal(kwargs['amount'])
+        self.blocks = DayBlocks(self.account_id, **kwargs['blocks'])
         self.currency = kwargs['currency']
+        self.date = kwargs['date']
+        self.listing = DayListing(self.account_id, **kwargs['listing'])
+        self.listingId = kwargs['listingId']
+        self.price = kwargs['price']
+        self.status = kwargs['status']
 
 
     def to_any_object(self):
         return {
-            'amount': self.amount,
-            'currency': self.currency
+            'v': self.v,
+            'id': self.id,
+            'accountId': self.accountId,
+            'blocks': self.blocks,
+            'currency': currency,
+            'date': date,
+            'listing': self.listing.to_any_object(),
+            'listingId': self.listingId,
+            'price': self.price,
+            'status': self.status,
+        }
+
+
+class DayBlocks(GuestyAccountResource):
+
+    def refresh_from(self, **kwargs):
+        self.a = kwargs['a']
+        self.abl = kwargs['abl']
+        self.b = kwargs['b']
+        self.bd = kwargs['bd']
+        self.bw = kwargs['bw']
+        self.m = kwargs['m']
+        self.o = kwargs['o']
+        self.r = kwargs['r']
+        self.sr = kwargs['sr']
+
+    def to_any_object(self):
+        return {
+            'a': self.a,
+            'abl': self.abl,
+            'b': self.b,
+            'bd': self.bd,
+            'bw': self.bw,
+            'm': self.m,
+            'o': self.o,
+            'r': self.r,
+            'sr': self.sr,
+        }
+
+
+class DayListing(GuestyAccountResource):
+
+    def refresh_from(self, **kwargs):
+        self.id = kwargs['_id']
+        self.prices = kwargs['prices']
+
+
+    def to_any_object(self):
+        return {
+            'id': self.id,
+            'prices': self.prices
         }

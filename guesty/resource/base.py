@@ -1,118 +1,151 @@
 from guesty import client
-from guesty.resource import guestyOAuthResource
+from guesty.resource import GuestyResource
 from guesty.util import (
     cached_property,
-    read_json,
 )
-from basedir import basedir
+import json
+import math
 
-import time
+class Account(GuestyResource):
 
-class AccountOAuth(guestyOAuthResource):
+    @classmethod
+    def all(cls):
+        res = client.get(Account.list_url())
+        return [Account(**a) for a in res]
 
     def refresh_from(self, **kwargs):
-        self.scope = kwargs['scope']
-        self.expires_in = kwargs['expires_in']
-        self.token_type = kwargs['token_type']
+        self.id = kwargs['_id']
+        self.name = kwargs['name']
+        self.timezone = kwargs['timezone']
 
-    # @cached_property
-    def get_property(self, id):
-        params = {
-            'include': 'listings'
-        }
-        res = client.get(self.access_token, Property.get_url(id), params)
+    # @cached_listing
+    def get_listing(self, id):
+        res = client.get(Listing.get_url(id))
         res = res['data']
-        return Property(**res)
+        return Listing(**res)
 
     @cached_property
-    def properties(self):
-        new_properties = []
-        params = {
-            'include': 'listings'
-        }
-        res = client.get(self.access_token, Property.list_url(), params)
-
-        # Pagination
-        if 'total_pages' in res['_pagination']:
-            num_pages = res['_pagination']['total_pages']
-        if 'per_page' in res['_pagination']:
-            per_page = res['_pagination']['per_page']
-
-        # First Results
-        res = res['data']
-        new_properties.extend([Property(**i) for i in res])
-
-        # More Results
-        for page in range(2, num_pages + 1):
+    def listings(self):
+        try:
+            new_listings = []
+            # Dev
             params = {
-                'include': 'listings'
+                'ids': '5ed7b1624ae885002d152a18',
+                'limit': 1,
             }
-            params['page'] = page
-            params['per_page'] = per_page
-            res = client.get(self.access_token, Property.list_url(), params)
-            res = res['data']
-            new_properties.extend([Property(**i) for i in res])
-        return new_properties
+            # params = {
+            #     'limit': 25,
+            # }
+            res = client.get(Listing.list_url(), params)
+
+            # Pagination
+            total_count = 0
+            count = len(res['results'])
+            if 'count' in res:
+                total_count = res['count']
+            if 'limit' in res:
+                limit = res['limit']
+            num_pages = math.ceil(total_count / limit)
+
+            print(count)
+            print(total_count)
+            print(limit)
+            print(num_pages)
+            # First Results
+            res = res['results']
+            new_listings.extend([Listing(self.id, **l) for l in res])
+            # More Results
+            for page in range(1, num_pages):
+                params = {}
+                params['skip'] = page * limit
+                params['limit'] = limit
+                print(params)
+                # res = client.get(self.access_token, Listing.list_url(), params)
+                # res = res['data']
+                # new_listings.extend([Listing(**i) for i in res])
+            print('GUESTY LISTINGS: {}'.format(len(new_listings)))
+            return new_listings
+        except Exception as e:
+            print(e)
 
     # @cached_property
     def get_calendar(self, id, start_date, end_date):
-        num_pages = 0
-        per_page = 0
-        new_calendar_days = []
         params = {
-            'start_date': start_date,
-            'end_date': end_date,
+            'from': start_date,
+            'to': end_date,
         }
-        res = client.get(self.access_token, Calendar.get_url(id), params)
-        res = res['data']
-        return Calendar(**res)
+        res = client.get(Calendar.get_url(self.id, id), params)
+        kwargs = {}
+        kwargs['days'] = res
+        return Calendar(self.id, **kwargs)
 
     # @cached_property
     def get_reservations(self, id, start_date, end_date):
-        num_pages = 0
-        per_page = 0
+        # num_pages = 0
+        # per_page = 0
         new_reservations = []
+        filters = []
+        filters.append({
+            'field': 'listingId',
+            'operator': '$eq',
+            'value': id,
+            'context': None
+        })
+        if start_date:
+            filters.append({
+                'field': 'checkIn',
+                'operator': '$gt',
+                'value': start_date,
+                'context': None
+            })
+        # if end_date:
+        #     filters.append({
+        #         'field': 'checkIn',
+        #         'operator': '$lt',
+        #         'value': end_date,
+        #         'context': None
+        #     })
         params = {
-            'listings[]': id,
-            'start_date': start_date,
-            'end_date': end_date
+            'filters': json.dumps(filters),
         }
-        params = "&".join("%s=%s" % (k,v) for k,v in params.items())
-        res = client.get(self.access_token, Reservation.list_url(), params)
+        print(params)
+        res = client.get(Reservation.list_url(self.id), params)
 
         # Pagination
-        if 'total_pages' in res['_pagination']:
-            num_pages = res['_pagination']['total_pages']
-        if 'per_page' in res['_pagination']:
-            per_page = res['_pagination']['per_page']
+        total_count = 0
+        count = len(res['results'])
+        if 'count' in res:
+            total_count = res['count']
+        if 'limit' in res:
+            limit = res['limit']
+        num_pages = math.ceil(total_count / limit)
+
+        print(count)
+        print(total_count)
+        print(limit)
+        print(num_pages)
 
         # Add First Page Results
-        res = res['data']
-        new_reservations.extend(Reservation(**i) for i in res)
+        res = res['results']
+        new_reservations.extend(Reservation(self.id, **r) for r in res)
 
-        # More Results
-        for page in range(2, num_pages + 1):
-            params = {
-                'listings[]': id,
-                'start_date': start_date,
-                'end_date': end_date
-            }
-            params['page'] = page
-            params['per_page'] = per_page
-            params = "&".join("%s=%s" % (k,v) for k,v in params.items())
-            res = client.get(self.access_token, Reservation.list_url(), params)
-            # Add Next Page Results
-            res = res['data']
-            new_reservations.extend(Reservation(**i) for i in res)
+        # # More Results
+        for page in range(1, num_pages):
+            params['skip'] = page * limit
+            params['limit'] = limit
+            print(params)
+            res = client.get(Reservation.list_url(self.id), params)
+            res = res['results']
+            new_reservations.extend([Reservation(self.id, **r) for r in res])
+        print('GUESTY RESERVATIONS: {}'.format(len(new_reservations)))
         return new_reservations
 
     def update_calendar(self,
-                    propertyHash=None,
+                    listingHash=None,
                     batch_array=None):
 
         result = Calendar.update(
-            self.access_token,
-            propertyHash,
+            listingHash,
             batch_array
         )
 
@@ -129,7 +162,6 @@ class AccountOAuth(guestyOAuthResource):
             'token_type': self.token_type,
         }
 
-from guesty.resource.property import Property  # noqa - avoid circular import
 from guesty.resource.listing import Listing  # noqa - avoid circular import
 from guesty.resource.reservation import Reservation  # noqa - avoid circular import
 from guesty.resource.calendar import Calendar  # noqa - avoid circular import

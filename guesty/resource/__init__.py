@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 from guesty import client
-from guesty.util import read_json
-from basedir import basedir
 
 
 class PrintableResource(object):
@@ -22,23 +20,29 @@ class PrintableResource(object):
         return '\n{{\n\t{}\n}}'.format('\n\t'.join(attrs))
 
 
-class guestyResource(PrintableResource):
+class GuestyResource(PrintableResource):
 
     @classmethod
-    def list_url(cls, id=None):
-        if id:
-            return client.build_url(id)
-        return client.build_url(None)
+    def list_url(cls):
+        return client.build_url('accounts/')
+
+    @classmethod
+    def retrieve_url(cls, instance_id):
+        return cls.list_url() + instance_id + '/'
+
+    @classmethod
+    def get(cls, instance_id):
+        res = client.get(cls.retrieve_url(instance_id), None)
+        return cls(**res)
 
     def __init__(self, **kwargs):
-        if 'access_token' in kwargs:
-            self.access_token = kwargs['access_token']
+        if 'id' in kwargs:
+            self.id = kwargs['id']
         self.refresh_from(**kwargs)
 
-    def refresh(self, **kwargs):
-        if 'access_token' in kwargs:
-            self.access_token = kwargs['access_token']
-        self.refresh_from(**kwargs)
+    def refresh(self):
+        res = client.get(self.instance_url, None)
+        return self.refresh_from(**res)
 
     def refresh_from(self, **kwargs):
         raise NotImplementedError
@@ -47,27 +51,36 @@ class guestyResource(PrintableResource):
     def instance_url(self):
         return self.__class__.retrieve_url(self.id)
 
-class guestyOAuthResource(guestyResource):
+
+class GuestyAccountResource(GuestyResource):
 
     @classmethod
-    def list_url(cls, id=None):
-        if id:
-            return client.build_url(id)
-        return client.build_url(None)
+    def list_url(cls, account_id):
+        # print('Account Resource "ListID1": {}'.format(account_id))
+        return client.build_url('')
 
-    def __init__(self, **kwargs):
-        if not kwargs:
-            kwargs = client.get_bearer_token()
+    @classmethod
+    def retrieve_url(cls, account_id, instance_id):
+        # print('Account Resource "RetID1": {} "RetID2": {}'.format(account_id, instance_id))
+        return cls.list_url(account_id) + instance_id + '/'
 
-        if 'access_token' in kwargs:
-            # if kwargs['expires_at'] > time.time():
-            #     print('Expirated of Access Token... Refreshing...')
-            #     kwargs = client.get_bearer_token()
-            self.access_token = kwargs['access_token']
-        super(guestyOAuthResource, self).__init__(**kwargs)
+    @classmethod
+    def get(cls, account_id, instance_id):
+        # print('Account Resource "GetID1": {} "GetID2": {}'.format(account_id, instance_id))
+        res = client.get(cls.retrieve_url(account_id, instance_id), None)
+        return cls(**res)
+
+    def __init__(self, account_id, **kwargs):
+        self.account_id = account_id
+        super(GuestyAccountResource, self).__init__(**kwargs)
+
+    @property
+    def instance_url(self):
+        return self.__class__.retrieve_url(self.account_id, self.id)
 
     def __unicode__(self):
-        return '<guesty::{} {} at OAuth {}>'.format(
+        return '<Guesty::{} {} at Account {}>'.format(
             self.__class__.__name__,
-            self.access_token,
+            self.id,
+            self.account_id
         )

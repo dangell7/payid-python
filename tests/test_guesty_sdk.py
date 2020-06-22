@@ -4,20 +4,21 @@ import pytest
 import guesty
 
 # @pytest.mark.skip(reason="Using Prod Cert")
-class TestguestyProperty(BaseTestConfig):
+class TestGuestySDK(BaseTestConfig):
 
     '''
-    Test Property Objects
+    Test sdk
     '''
 
-    def test_guesty_get_property(self):
+    @pytest.mark.skip(reason="Using Prod Cert")
+    def test_guesty_get_listing(self):
         property = self.client.get_property('327154')
         self.assertNotEqual(property.to_any_object(), {})
         self.assertEqual(property.id, '327154')
         print(e)
 
     @pytest.mark.skip(reason="Using Prod Cert")
-    def test_guesty_properties(self):
+    def test_guesty_listings(self):
         properties = self.client.properties
         self.assertNotEqual(len(properties), 0)
         # print(e)

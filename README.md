@@ -35,7 +35,7 @@ guesty.api_client_id = 'xxx'
 guesty.api_client_secret = 'xxx'
 guesty.api_version = 'v2'
 
-client = guesty.AccountOAuth()
+client = guesty.Account()
 
 properties = client.properties
 propertyName = properties[0].name

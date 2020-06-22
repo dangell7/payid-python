@@ -21,7 +21,7 @@ class BaseTestConfig(TestCase):
         self.guesty_auth()
 
     def guesty_auth(self):
-        self.client = guesty.AccountOAuth()
+        self.client = guesty.Account()
         self.assertNotEqual(self.client, None)
         self.assertEqual(self.client.scope, 'read:calendar write:calendar')
         self.assertEqual(self.client.expires_in, 86400)
