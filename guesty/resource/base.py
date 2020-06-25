@@ -22,7 +22,7 @@ class Account(GuestyResource):
     def get_listing(self, id):
         res = client.get(Listing.get_url(id))
         res = res['data']
-        return Listing(**res)
+        return Listing(self.id, **res)
 
     @cached_property
     def listings(self):
@@ -74,7 +74,7 @@ class Account(GuestyResource):
             'from': start_date,
             'to': end_date,
         }
-        res = client.get(Calendar.get_url(self.id, id), params)
+        res = client.get(Calendar.get_url(id), params)
         kwargs = {}
         kwargs['days'] = res
         return Calendar(self.id, **kwargs)
@@ -109,7 +109,7 @@ class Account(GuestyResource):
             'filters': json.dumps(filters),
         }
         print(params)
-        res = client.get(Reservation.list_url(self.id), params)
+        res = client.get(Reservation.list_url(), params)
 
         # Pagination
         total_count = 0
@@ -134,7 +134,7 @@ class Account(GuestyResource):
             params['skip'] = page * limit
             params['limit'] = limit
             print(params)
-            res = client.get(Reservation.list_url(self.id), params)
+            res = client.get(Reservation.list_url(), params)
             res = res['results']
             new_reservations.extend([Reservation(self.id, **r) for r in res])
         print('GUESTY RESERVATIONS: {}'.format(len(new_reservations)))

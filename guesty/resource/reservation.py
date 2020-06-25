@@ -6,12 +6,12 @@ import json
 class Reservation(GuestyAccountResource):
 
     @classmethod
-    def list_url(cls, account_id):
-        return super(Reservation, cls).list_url(account_id) + 'reservations'
+    def list_url(cls):
+        return super(Reservation, cls).list_url(None) + 'reservations'
 
     @classmethod
-    def get_url(cls, account_id, id):
-        return super(Reservation, cls).get_url(account_id) + 'reservations/' + id + '/'
+    def get_url(cls, id):
+        return super(Reservation, cls).list_url(None) + 'reservations/' + id + '/'
 
     def refresh_from(self, **kwargs):
         print('Guesty Reservations: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))

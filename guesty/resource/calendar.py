@@ -31,8 +31,8 @@ def format_array(listingHash, batch_days_array):
 class Calendar(GuestyAccountResource):
 
     @classmethod
-    def list_url(cls, account_id):
-        return super(Calendar, cls).list_url(account_id) + 'listings/calendars'
+    def list_url(cls):
+        return super(Calendar, cls).list_url(None) + 'listings/calendars'
 
     @classmethod
     def get_url(cls, id):
