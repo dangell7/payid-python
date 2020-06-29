@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from guesty import client
 from guesty.resource import GuestyAccountResource
-
+import json
 
 def get_arrays_from_array(batch_days_array):
     updated_calendar_arrays = []
@@ -65,6 +65,7 @@ class Calendar(GuestyAccountResource):
 class Day(GuestyAccountResource):
 
     def refresh_from(self, **kwargs):
+        print('Guesty Day: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
         self.v = None
         self.id = None
         self.accountId = None
