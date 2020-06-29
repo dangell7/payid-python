@@ -74,8 +74,8 @@ def put_headers():
 
 def get(url, params):
     try:
-        print('Get Url: {}'.format(url))
-        print('Get Params: {}'.format(params))
+        # print('Get Url: {}'.format(url))
+        # print('Get Params: {}'.format(params))
         res = requests.get(url, params=params, headers=get_headers())
     except Exception as e:
         handle_request_error(e)
@@ -85,8 +85,8 @@ def get(url, params):
 
 def put(url, json):
     try:
-        print('Put Url: {}'.format(url))
-        print('Put Json: {}'.format(json))
+        # print('Put Url: {}'.format(url))
+        # print('Put Json: {}'.format(json))
         res = requests.put(url, headers=put_headers(), json=json)
     except Exception as e:
         handle_request_error(e)

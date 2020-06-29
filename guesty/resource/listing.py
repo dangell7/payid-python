@@ -14,8 +14,7 @@ class Listing(GuestyAccountResource):
         return super(Listing, cls).list_url(None) + 'listings/' + id + '/'
 
     def refresh_from(self, **kwargs):
-        # print(json.dumps(kwargs, indent=4, sort_keys=True))
-        print('LISTING ID: {}'.format(kwargs['_id']))
+        # print('Guesty Listing: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
         self.id = kwargs['_id']
         self.accommodates = kwargs['accommodates']
         self.accountId = kwargs['accountId']
@@ -48,7 +47,9 @@ class Listing(GuestyAccountResource):
         self.nickname = kwargs['nickname']
         self.occupancyStats = kwargs['occupancyStats']
         self.offeredServices = kwargs['offeredServices']
-        self.otaRoomType = kwargs['otaRoomType']
+        self.otaRoomType = None
+        if 'otaRoomType' in kwargs:
+            self.otaRoomType = kwargs['otaRoomType']
         self.ownerRevenueFormula = kwargs['ownerRevenueFormula']
         # TODO -> Is Object or Array
         self.owners = kwargs['owners']
@@ -152,7 +153,6 @@ class Integration(GuestyAccountResource):
         self.airbnb2 = None
         self.homeaway2 = None
         self.externalUrl = None
-        # print(json.dumps(kwargs, indent=4, sort_keys=True))
         if 'airbnb2' in kwargs:
             self.airbnb2 = kwargs['airbnb2']
             if 'id' in kwargs['airbnb2']:
