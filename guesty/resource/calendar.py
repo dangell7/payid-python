@@ -65,7 +65,7 @@ class Calendar(GuestyAccountResource):
 class Day(GuestyAccountResource):
 
     def refresh_from(self, **kwargs):
-        print('Guesty Day: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
+        # print('Guesty Day: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
         self.v = None
         self.id = None
         self.accountId = None
@@ -83,6 +83,7 @@ class Day(GuestyAccountResource):
         self.listingId = kwargs['listingId']
         self.price = kwargs['price']
         self.status = kwargs['status']
+        # print('Guesty Day: {}'.format(json.dumps(self.to_any_object(), indent=4, sort_keys=True)))
 
 
     def to_any_object(self):
@@ -90,9 +91,9 @@ class Day(GuestyAccountResource):
             'v': self.v,
             'id': self.id,
             'accountId': self.accountId,
-            'blocks': self.blocks,
-            'currency': currency,
-            'date': date,
+            'blocks': self.blocks.to_any_object(),
+            'currency': self.currency,
+            'date': self.date,
             'listing': self.listing.to_any_object(),
             'listingId': self.listingId,
             'price': self.price,
