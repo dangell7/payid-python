@@ -3,22 +3,6 @@ from guesty import client
 from guesty.resource import GuestyAccountResource
 import json
 
-def get_arrays_from_array(batch_days_array):
-    updated_calendar_arrays = []
-    updated_calendar_days = []
-    sbb_batch_max = 60
-    for day in batch_days_array:
-        updated_calendar_days.append(day)
-        if len(updated_calendar_days) == sbb_batch_max:
-            updated_calendar_arrays.append(updated_calendar_days)
-            updated_calendar_days = []
-
-
-    # Add non 60 batch (last)
-    if len(updated_calendar_days) > 0:
-        updated_calendar_arrays.append(updated_calendar_days)
-    return updated_calendar_arrays
-
 
 def format_array(listingHash, batch_days_array):
     new_array = []
@@ -32,18 +16,18 @@ class Calendar(GuestyAccountResource):
 
     @classmethod
     def list_url(cls):
-        return super(Calendar, cls).list_url(None) + 'listings/calendars'
+        return super(Calendar, cls).list_url() + 'listings/calendars'
 
     @classmethod
     def get_url(cls, id):
         print('GET CAL')
-        return super(Calendar, cls).list_url(None) + 'listings/' + id + '/calendar'
+        return super(Calendar, cls).list_url() + 'listings/' + id + '/calendar'
 
     @classmethod
     def update(cls, listingHash, batch_days_array):
 
         batch_days_array = format_array(listingHash, batch_days_array)
-        res = client.put(cls.list_url(None), batch_days_array)
+        res = client.put(cls.list_url(), batch_days_array)
         return res
 
     def refresh_from(self, **kwargs):
