@@ -16,16 +16,15 @@ class Calendar(GuestyAccountResource):
 
     @classmethod
     def list_url(cls):
-        return super(Calendar, cls).list_url() + 'listings/calendars'
+        return super(Calendar, cls).list_url(None) + 'listings/calendars'
 
     @classmethod
     def get_url(cls, id):
         print('GET CAL')
-        return super(Calendar, cls).list_url() + 'listings/' + id + '/calendar'
+        return super(Calendar, cls).list_url(None) + 'listings/' + id + '/calendar'
 
     @classmethod
     def update(cls, listingHash, batch_days_array):
-
         batch_days_array = format_array(listingHash, batch_days_array)
         res = client.put(cls.list_url(), batch_days_array)
         return res
