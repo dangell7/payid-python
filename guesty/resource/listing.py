@@ -14,7 +14,7 @@ class Listing(GuestyAccountResource):
         return super(Listing, cls).list_url(None) + 'listings/' + id + '/'
 
     def refresh_from(self, **kwargs):
-        print('Guesty Listing: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
+        # print('Guesty Listing: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
         self.id = kwargs['_id']
         self.accommodates = kwargs['accommodates']
         self.accountId = kwargs['accountId']

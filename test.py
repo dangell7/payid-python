@@ -1,5 +1,5 @@
 
-from basedir import basedir
+from config import basedir
 import os
 import shutil
 import sys

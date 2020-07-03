@@ -20,7 +20,6 @@ class Calendar(GuestyAccountResource):
 
     @classmethod
     def get_url(cls, id):
-        print('GET CAL')
         return super(Calendar, cls).list_url(None) + 'listings/' + id + '/calendar'
 
     @classmethod

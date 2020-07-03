@@ -29,29 +29,19 @@ class Account(GuestyResource):
     def listings(self):
         try:
             new_listings = []
-            # Dev
             params = {
-                'ids': '5ed7b1624ae885002d152a18',
-                'limit': 1,
+                'limit': 25,
             }
-            # params = {
-            #     'limit': 25,
-            # }
             res = client.get(Listing.list_url(), params)
 
             # Pagination
             total_count = 0
-            count = len(res['results'])
             if 'count' in res:
                 total_count = res['count']
             if 'limit' in res:
                 limit = res['limit']
             num_pages = math.ceil(total_count / limit)
 
-            print(count)
-            print(total_count)
-            print(limit)
-            print(num_pages)
             # First Results
             res = res['results']
             new_listings.extend([Listing(self.id, **l) for l in res])
@@ -60,8 +50,6 @@ class Account(GuestyResource):
                 params = {}
                 params['skip'] = page * limit
                 params['limit'] = limit
-                print('SECOND CALL')
-                print(params)
                 res = client.get(Listing.list_url(), params)
                 res = res['results']
                 new_listings.extend([Listing(self.id, **i) for i in res])
@@ -108,23 +96,17 @@ class Account(GuestyResource):
         #     })
         params = {
             'filters': json.dumps(filters),
-            'fields': 'nightsCount checkIn checkOut createdAt money status',
+            'fields': 'nightsCount checkIn checkOut createdAt money status confirmationCode',
         }
         res = client.get(Reservation.list_url(), params)
 
         # Pagination
         total_count = 0
-        count = len(res['results'])
         if 'count' in res:
             total_count = res['count']
         if 'limit' in res:
             limit = res['limit']
         num_pages = math.ceil(total_count / limit)
-
-        # print(count)
-        # print(total_count)
-        # print(limit)
-        # print(num_pages)
 
         # Add First Page Results
         res = res['results']
@@ -134,33 +116,20 @@ class Account(GuestyResource):
         for page in range(1, num_pages):
             params['skip'] = page * limit
             params['limit'] = limit
-            # print(params)
             res = client.get(Reservation.list_url(), params)
             res = res['results']
             new_reservations.extend([Reservation(self.id, **r) for r in res])
         return new_reservations
 
-    def update_calendar(self,
-                    listingHash=None,
-                    batch_array=None):
-
+    def update_calendar(self, listingHash=None, batch_array=None):
         result = Calendar.update(
             listingHash,
             batch_array
         )
-
         return result
 
     def __unicode__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.id)
-
-    def to_any_object(self):
-        return {
-            'access_token': self.access_token,
-            'scope': self.scope,
-            'expires_in': self.expires_in,
-            'token_type': self.token_type,
-        }
 
 from guesty.resource.listing import Listing  # noqa - avoid circular import
 from guesty.resource.reservation import Reservation  # noqa - avoid circular import
