@@ -27,35 +27,32 @@ class Account(GuestyResource):
 
     @cached_property
     def listings(self):
-        try:
-            new_listings = []
-            params = {
-                'limit': 25,
-            }
+        new_listings = []
+        params = {
+            'limit': 25,
+        }
+        res = client.get(Listing.list_url(), params)
+
+        # Pagination
+        total_count = 0
+        if 'count' in res:
+            total_count = res['count']
+        if 'limit' in res:
+            limit = res['limit']
+        num_pages = math.ceil(total_count / limit)
+
+        # First Results
+        res = res['results']
+        new_listings.extend([Listing(self.id, **l) for l in res])
+        # More Results
+        for page in range(1, num_pages):
+            params = {}
+            params['skip'] = page * limit
+            params['limit'] = limit
             res = client.get(Listing.list_url(), params)
-
-            # Pagination
-            total_count = 0
-            if 'count' in res:
-                total_count = res['count']
-            if 'limit' in res:
-                limit = res['limit']
-            num_pages = math.ceil(total_count / limit)
-
-            # First Results
             res = res['results']
-            new_listings.extend([Listing(self.id, **l) for l in res])
-            # More Results
-            for page in range(1, num_pages):
-                params = {}
-                params['skip'] = page * limit
-                params['limit'] = limit
-                res = client.get(Listing.list_url(), params)
-                res = res['results']
-                new_listings.extend([Listing(self.id, **i) for i in res])
-            return new_listings
-        except Exception as e:
-            print(e)
+            new_listings.extend([Listing(self.id, **i) for i in res])
+        return new_listings
 
     # @cached_property
     def get_calendar(self, id, start_date, end_date):

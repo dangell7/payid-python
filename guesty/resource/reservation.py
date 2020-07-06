@@ -31,7 +31,7 @@ class Reservation(GuestyAccountResource):
         self.listingId = kwargs['listingId']
         self.status = kwargs['status']
         self.money = ReservationMoney(self.account_id, **kwargs['money'])
-        print('Guesty Reservation: {}'.format(json.dumps(self.to_any_object(), indent=4, sort_keys=True)))
+        # print('Guesty Reservation: {}'.format(json.dumps(self.to_any_object(), indent=4, sort_keys=True)))
 
     def to_any_object(self):
         return {
