@@ -3,7 +3,7 @@ import pytest
 
 import guesty
 
-# @pytest.mark.skip(reason="Using Prod Cert")
+@pytest.mark.skip(reason="Using Prod Cert")
 class TestGuestySDK(BaseTestConfig):
 
     '''

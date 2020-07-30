@@ -95,6 +95,7 @@ class ReservationListing(GuestyAccountResource):
 class ReservationMoney(GuestyAccountResource):
 
     def refresh_from(self, **kwargs):
+        print('Guesty Reservation Money: {}'.format(json.dumps(kwargs, indent=4, sort_keys=True)))
         # self.altered = kwargs['altered']
         # self.autoPaymentsPolicy = kwargs['autoPaymentsPolicy']
         # self.balanceDue = kwargs['balanceDue']
@@ -107,7 +108,7 @@ class ReservationMoney(GuestyAccountResource):
         self.currency = kwargs['currency']
         self.fareAccommodation = kwargs['fareAccommodation']
         # self.fareAccommodationAdjusted = kwargs['fareAccommodationAdjusted']
-        # self.fareCleaning = kwargs['fareCleaning']
+        self.fareCleaning = kwargs['fareCleaning']
         # self.hostOriginalPayout = kwargs['hostOriginalPayout']
         # self.hostPayout = kwargs['hostPayout']
         # self.hostPayoutUsd = kwargs['hostPayoutUsd']
@@ -138,7 +139,7 @@ class ReservationMoney(GuestyAccountResource):
             'currency': self.currency,
             'fareAccommodation': self.fareAccommodation,
             # 'fareAccommodationAdjusted': self.fareAccommodationAdjusted,
-            # 'fareCleaning': self.fareCleaning,
+            'fareCleaning': self.fareCleaning,
             # 'hostOriginalPayout': self.hostOriginalPayout,
             # 'hostPayout': self.hostPayout,
             # 'hostPayoutUsd': self.hostPayoutUsd,

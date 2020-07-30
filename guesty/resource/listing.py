@@ -62,7 +62,7 @@ class Listing(GuestyAccountResource):
         # self.pms = kwargs['pms']
         # self.preBooking = kwargs['preBooking']
         # # TODO -> Is Object or Array
-        # self.prices = kwargs['prices']
+        self.prices = Prices(self.account_id, **kwargs['prices'])
         # # TODO -> Is Object or Array
         # self.privateDescription = kwargs['privateDescription']
         # self.propertyType = kwargs['propertyType']
@@ -127,7 +127,7 @@ class Listing(GuestyAccountResource):
             # 'pictures': self.pictures,
             # 'pms': self.pms,
             # 'preBooking': self.preBooking,
-            # 'prices': self.prices,
+            'prices': self.prices.to_any_object(),
             # 'privateDescription': self.privateDescription,
             # 'propertyType': self.propertyType,
             # 'publicDescription': self.publicDescription,
@@ -216,4 +216,19 @@ class Picture(GuestyAccountResource):
     def to_any_object(self):
         return {
             'thumbnail': self.thumbnail,
+        }
+
+
+class Prices(GuestyAccountResource):
+
+    def refresh_from(self, **kwargs):
+        self.currency = kwargs['currency']
+        self.basePrice = kwargs['basePrice']
+        self.cleaningFee = kwargs['cleaningFee']
+
+    def to_any_object(self):
+        return {
+            'currency': self.currency,
+            'basePrice': self.basePrice,
+            'cleaningFee': self.cleaningFee,
         }
