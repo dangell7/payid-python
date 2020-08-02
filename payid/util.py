@@ -1,4 +1,6 @@
-import re
+
+import pandas as pd
+import json
 
 class CachedProperty(object):
     """
@@ -22,29 +24,28 @@ class CachedProperty(object):
         value = obj.__dict__[self.func.__name__] = self.func(obj)
         return value
 
+
 cached_property = CachedProperty
 
-def get_included_object(obj):
-    try:
-        rel = obj['_included'][0]['rel']
-        data = obj['_included'][0]['data']
-        return rel, data
-    except:
-        return None
-
-def has_included_objects(obj):
-    return '_included' in obj
-
-import json
 
 def read_json(path):
     with open(path) as json_file:
         return json.load(json_file)
 
-def from_decimal_to_int(decimal):
-    decimal = '{0:.2f}'.format(float(decimal))
-    return int(re.sub('\.', '', decimal))
 
-def from_int_to_decimal(integer):
-    string = str(integer)
-    return round(float('{}.{}'.format(string[:-2], string[-2:])), 2)
+def save_json(path, data):
+    with open(path, 'w') as json_file:
+        return json.dump(data, json_file, indent=4, sort_keys=True)
+
+
+def read_csv(csv_path):
+    df = pd.read_csv(csv_path)
+    df = df.applymap(str)
+    df = df.replace({'nan': None})
+    df = df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+    return df
+
+
+def save_csv(path, data):
+    with open(path, 'w') as json_file:
+        return json.dump(data, json_file, indent=4, sort_keys=True)

@@ -3,8 +3,8 @@ from config import basedir
 import os
 import shutil
 import sys
-import requests
 import pytest
+
 
 def main():
     argv = []
@@ -29,6 +29,7 @@ def main():
         shutil.rmtree(os.path.join(basedir, 'tests/.cache'))
     except OSError:
         pass
+
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,5 @@
 .eggs
-guesty.egg-info
+payid.egg-info
 *.pyc
 venv
 .cache

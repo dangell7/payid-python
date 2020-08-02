@@ -1,6 +1,6 @@
-class guestyError(Exception):
+class PayIDError(Exception):
     def __init__(self, error, status_code=None, headers=None):
-        super(guestyError, self).__init__(error)
+        super(PayIDError, self).__init__(error)
 
         self.error = error
         self.status_code = status_code
@@ -10,17 +10,17 @@ class guestyError(Exception):
         return self.error
 
 
-class APIError(guestyError):
+class APIError(PayIDError):
     pass
 
 
-class APIConnectionError(guestyError):
+class APIConnectionError(PayIDError):
     pass
 
 
-class InvalidRequestError(guestyError):
+class InvalidRequestError(PayIDError):
     pass
 
 
-class AuthenticationError(guestyError):
+class AuthenticationError(PayIDError):
     pass

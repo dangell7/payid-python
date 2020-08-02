@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import guesty
+import payid
 
 class BaseTestConfig(TestCase):
 
@@ -14,14 +14,14 @@ class BaseTestConfig(TestCase):
 
     def setUp(self):
         print('Set Up Testing Auth')
-        guesty.env = 'Prod'
-        guesty.api_client_id = self.client_id
-        guesty.api_client_secret = self.client_secret
-        guesty.api_version = self.version
-        self.guesty_auth()
+        payid.env = 'Prod'
+        payid.api_client_id = self.client_id
+        payid.api_client_secret = self.client_secret
+        payid.api_version = self.version
+        self.payid_auth()
 
-    def guesty_auth(self):
-        self.client = guesty.Account()
+    def payid_auth(self):
+        self.client = payid.Account()
         self.assertNotEqual(self.client, None)
         self.assertEqual(self.client.scope, 'read:calendar write:calendar')
         self.assertEqual(self.client.expires_in, 86400)

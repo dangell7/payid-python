@@ -1,24 +1,24 @@
-# Guesty Python library
+# PayID Python library
 
-[![CircleCI](https://circleci.com/bb/Harpangell/guesty-python/tree/master.svg?style=svg&circle-token=3e47a0118e8b37d59b9dae0d884468d3f8f94c99)](https://circleci.com/bb/Harpangell/guesty-python/tree/master)
+[![CircleCI](https://circleci.com/bb/Harpangell/payid-python/tree/master.svg?style=svg&circle-token=3e47a0118e8b37d59b9dae0d884468d3f8f94c99)](https://circleci.com/bb/Harpangell/payid-python/tree/master)
 
 ## Installation
 
 ```bash
-pip install git+git://bitbucket.org/Harpangell/guesty-python.git@master
+pip install git+git://bitbucket.org/Harpangell/payid-python.git@master
 ```
 
 To install from source, run
 
 ```bash
-git clone https://Harpangell@bitbucket.org/Harpangell/guesty-python.git
-cd guesty
+git clone https://Harpangell@bitbucket.org/Harpangell/payid-python.git
+cd payid
 python setup.py install
 ```
 
 ## Documentation
 
-Please see the [Guesty API Documentation](https://api-co.guesty.com/Documentation/#getting-started) for the most up-to-date API documentation.
+Please see the [PayID API Documentation](https://api-co.payid.com/Documentation/#getting-started) for the most up-to-date API documentation.
 
 ### Usage
 
@@ -27,15 +27,15 @@ This library has only been tested using Python 3.6.?.
 Getting and interacting with accounts:
 
 ```python
-import guesty
+import payid
 
-guesty.api_key = 'xxx'
-guesty.env = 'Prod'
-guesty.api_client_id = 'xxx'
-guesty.api_client_secret = 'xxx'
-guesty.api_version = 'v2'
+payid.api_key = 'xxx'
+payid.env = 'Prod'
+payid.api_client_id = 'xxx'
+payid.api_client_secret = 'xxx'
+payid.api_version = 'v2'
 
-client = guesty.Account()
+client = payid.Account()
 
 properties = client.properties
 propertyName = properties[0].name
@@ -95,7 +95,7 @@ To run the test suite, run `py.test` from the project root.
 
 ### Linting
 
-We enforce linting on the code with flake8. Run with `flake8 guesty` from the project root.
+We enforce linting on the code with flake8. Run with `flake8 payid` from the project root.
 
 ### TODOs
 
